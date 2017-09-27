@@ -1,0 +1,38 @@
+---
+title: "Murder/Manslaughter Case Project"
+author: "Jacob Jankel" (Everyone add name)
+date: "September 27, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Comparison of cities in solving Murder/Manslaughter cases 
+
+### Introduction
+
+For our project, we were hired by the state of California and given nationwide (US) data regarding solved and unsolved murder cases dating back to 1980. We were asked to analyze which 5 cities in california were combatting homocide the most effectively, and which 5 were combatting it the least effectively. This is part of a state wide effort to more effectively distribute state funding to different police departments. 
+
+Additionally, our project sponsors stressed not just using historical data on solved cases to select our cities. But to also run auxillary tests on the data to see which cities may need additional funding in the future. 
+
+###Regression Method Code
+
+```{r}
+ggplotRegression <- function (fit) {
+
+require(ggplot2)
+
+ggplot(fit$model, aes_string(x = names(fit$model)[2], y = names(fit$model)[1])) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red") +
+  labs(title = paste("Adj R2 = ",signif(summary(fit)$adj.r.squared, 5),
+                     "Intercept =",signif(fit$coef[[1]],5 ),
+                     " Slope =",signif(fit$coef[[2]], 5),
+                     " P =",signif(summary(fit)$coef[2,4], 5)))
+}
+```
+
+
+
