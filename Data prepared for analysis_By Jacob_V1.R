@@ -1,4 +1,6 @@
 library(dplyr)
+library(ggplot2)
+
 df <- read.csv("database.csv", header = TRUE)
 
 
@@ -33,9 +35,37 @@ cali.df <- murder.num %>%
   filter(n>32) %>%
   ungroup()
 
-cali.df  
+head(cali.df)  
 
 
 num.cities.approved <- n_distinct(cali.cities$City) #Equals to 51 cities in california with 32+ crimes
 cali.cities
+
+
+solved.vs.number <- glm(Crime.Solved ~ n, family = binomial(link='logit'),data=cali.df)
+
+glimpse(cali.df)
+
+solve.num <- cali.df %>%
+  group_by(City, Crime.Solved) %>%
+  summarise(count = n()) %>%
+  filter(Crime.Solved == 'Yes') %>%
+  ungroup() %>%
+  select(one_of('count'))
+
+crime.num <- cali.df %>%
+  select(one_of('City')) %>%
+  group_by(City)  %>%
+  summarise(count = n()) 
+
+ratio.solved <- (solve.num / crime.num$count)
+
+cities.with.ratios <- data.frame(crime.num$City, ratio.solved)
+cities.with.ratios <- arrange(cities.with.ratios, cities.with.ratios$count)
+
+head(cities.with.ratios, 5)
+
+tail(cities.with.ratios, 5)
+
+
 
