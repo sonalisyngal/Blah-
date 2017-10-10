@@ -1,0 +1,43 @@
+---
+title: "Data Prep"
+author: "Percy Tang"
+date: "27 September 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction 
+```{r}
+
+```
+
+## Library calls
+```{r}
+
+```
+
+## Data Preperation
+```{r}
+
+```
+
+## Overview Analysis
+```{r}
+
+```
+
+##Individual City Analysis
+
+```{r}
+
+```
+
+
+# Conclusion
+```{r}
+
+```
+
