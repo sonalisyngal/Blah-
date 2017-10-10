@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Data Preperation
 ```{r}
 library(dplyr)
-df <- read.csv("database.csv", header = TRUE)
+df <- read.csv("wkw.csv", header = TRUE)
 
 
 
@@ -98,6 +98,7 @@ These are just some I have identified, we should all do as much and whatever we 
 #Running Logistical regression Syntax:
 ```{r}
 LRM <- glm(Crime.Solved ~Victim.Age, family = 'binomial', data= new_york) #Run with various variables and see relationship- Whether any variable predicts Crime.Solved.
+LRM
 ```
 
 #Random correlation test:
@@ -107,6 +108,11 @@ cor(new_york$Victim.Age, new_york$Perpetrator.Age)
 Not so high correlation, but positive. What is a high correlation?
 
 
+
+#Logistical regressio on what variables determine ability of case being solved or not
+```{r}
+
+```
 
 
 
