@@ -1,0 +1,113 @@
+---
+title: "Data Prep"
+author: "Sonali Syngal"
+date: "27 September 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data Preperation
+```{r}
+library(dplyr)
+df <- read.csv("database.csv", header = TRUE)
+
+
+
+names_to_drop <- c( 'Record.ID', 'Agency.Name', 'Record.Source', 
+                   'Perpetrator.Ethnicity') # Dropping the variables from our analysis
+
+
+#Our main dataset:
+murder.num <- df %>%
+  filter(Crime.Type == "Murder or Manslaughter") %>%
+  select(-one_of(names_to_drop)) %>%
+  filter(Victim.Age > 0 & Victim.Age < 99) %>%
+  filter(!(Perpetrator.Race == 'Unknown' & Crime.Solved == 'Yes')) %>%
+  mutate(Victim.Counts = Victim.Count + 1, Perpetrator.Counts = Perpetrator.Count +1) %>%
+  select(-one_of('Victim.Count', 'Perpetrator.Count'))
+
+
+#Summarizing each city and the number of crimes in it:
+most_crime_cities <- 
+  group_by(murder.num, City) %>%
+  summarise(n = n()) %>%
+  arrange(desc(n)) 
+
+#This will print cities with the maximum number of crimes. We will look at the first 5:
+head(most_crime_cities) 
+
+```
+It seems that LA, Cook, Harris, Wayne and New York are cities in which most crime is committed.
+
+
+
+```{r}
+
+# This will give us an additional column which will have proportion of crimes solved in that city
+prop_crimes_solved <- 
+  group_by(murder.num, City) %>% 
+  mutate(TotalCrimes = n()) %>%
+  ungroup() %>%
+  filter(Crime.Solved == "Yes") %>%
+  group_by(City) %>%
+  mutate(Prop.Crimes.Solved= (n()/TotalCrimes)) %>% 
+  arrange(TotalCrimes)
+# However this dataset isnt the total dataset since Crime Solved = No has been filtered out
+
+
+max_crime_cities <- c('New York', 'Los Angeles','Cook','Harris', 'Wayne')
+
+
+#Creating a table of our cities with proportion of crime solved and total crimes:
+prop.table <- select(prop_crimes_solved, City, TotalCrimes,Prop.Crimes.Solved ) %>%
+  filter(City %in% max_crime_cities) %>%
+  group_by(City, TotalCrimes, Prop.Crimes.Solved) %>%
+  summarise() 
+
+prop.table
+```
+
+
+## New York : Individual City Analysis
+
+```{r}
+
+#Preparing data for your individual city-wise analysis:
+new_york <- filter(murder.num, City == "New York") #You can filter your individual city. For eg, City == "Cook"
+```
+
+
+
+What we can do in each city (Analysis):
+1) Logistical regressions to check what variables determine ability of case being solved or not. 
+2) Monthly/ Yearly analysis on cases
+3) Victim Sex, Victim Age distribution (same with perpretrator)
+4) Perpretrator and victim race relationship
+5) Relationship distribution
+6) Weapon distribution
+7) Correlate victim age and perp age
+8) Victim count versus pepretrator count (lol?)
+9) Hypothesis testing on anything which seems relevant 
+10) Provide suggestions to help in preventing crimes and solving crimes
+
+These are just some I have identified, we should all do as much and whatever we feel like might get great results.
+
+#Running Logistical regression Syntax:
+```{r}
+LRM <- glm(Crime.Solved ~Victim.Age, family = 'binomial', data= new_york) #Run with various variables and see relationship- Whether any variable predicts Crime.Solved.
+```
+
+#Random correlation test:
+```{r}
+cor(new_york$Victim.Age, new_york$Perpetrator.Age)
+```
+Not so high correlation, but positive. What is a high correlation?
+
+
+
+
+
+
